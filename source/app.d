@@ -115,7 +115,7 @@ immutable color = Rgba(232, 232, 232, 255);
 
 // Called once when the game starts.
 void ready() {
-    lockResolution(300, 150);
+    lockResolution(800, 600);
     setWindowTitle("Boids");
     //toggleIsFullscreen();
     game = Game.gameInit(0);
