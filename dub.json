@@ -1,0 +1,30 @@
+{
+  "authors": ["Sergei Giniatulin"],
+  "copyright": "Copyright © 2026, Serg Gini",
+  "description": "A Game Of Life made with Parin.",
+  "license": "MIT",
+  "name": "game",
+  "stringImportPaths": ["assets"],
+  "dependencies": {
+    "parin": "*"
+  },
+  "configurations": [
+    {
+      "name": "default",
+      "targetType": "executable",
+      "dflags-ldc": ["-mcpu=native"]
+    },
+    {
+      "name": "wasm",
+      "targetType": "library",
+      "targetName": "game_wasm",
+      "dflags": [
+        "-mtriple=wasm32-unknown-unknown-wasm",
+        "-checkaction=halt",
+        "-i",
+        "--release",
+        "-betterC"
+      ]
+    }
+  ]
+}
