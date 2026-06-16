@@ -21,19 +21,14 @@ struct Game {
     Vec2 size;
     float speed;
 
-    static Game gameInit(size_t boidCount) {
-        auto size = windowSize();
-        auto sizeMax = max(size.x, size.y);
-        auto game = Game(
-            List!Boid(),
-            0.05 * sizeMax,
-            size,
-            0.1 * sizeMax
-        );
-
-        foreach (i; 0 .. boidCount)
-            game.addBoid();
-        return game;
+    this(size_t boidCount) {
+        this.size = windowSize();
+        float sizeMax = max(size.x, size.y);
+        this.boids = List!Boid();
+        this.reach = 0.05f * sizeMax;
+        this.speed = 0.1f * sizeMax;
+        foreach(i; 0 .. boidCount)
+            this.addBoid();
     }
 
     void addBoid() {
@@ -44,7 +39,6 @@ struct Game {
     }
 
     Vec2 delta(Vec2 toward, Vec2 from) {
-        auto size = this.size;
         auto half = size / 2.0f;
         Vec2 delta = toward - from;
         // Wrap delta
@@ -67,7 +61,6 @@ struct Game {
     }
 
     void update(float dt) {
-        immutable speed = this.speed;
         foreach (ref boid; this.boids.items) {
             updateBoidVel(boid);
             boid.pos = wrap(boid.pos + boid.vel * speed * dt);
@@ -75,7 +68,6 @@ struct Game {
     }
 
     void updateBoidVel(ref Boid boid) {
-        immutable reach = this.reach;
         auto meanDelta = Vec2(0.0f);
         auto meanTrend = Vec2(0.0f);
         auto meanSpread = Vec2(0.0f);
@@ -118,7 +110,7 @@ void ready() {
     lockResolution(800, 600);
     setWindowTitle("Boids");
     //toggleIsFullscreen();
-    game = Game.gameInit(0);
+    game = Game(0);
     setWindowBackgroundColor(Rgba(43, 43, 56, 255));
 }
 
@@ -130,9 +122,9 @@ bool update(float dt) {
         game.addBoid();
     game.draw(color);
     auto tmp = game.boids.length;
-    drawText("FPS: {}".fmt(parin.fps), Vec2(10.0f, 40.0f), DrawOptions(color));
-    drawText("Boids: {}".fmt(tmp), Vec2(10.0f, 80.0f), DrawOptions(color));
-    drawText("Score: {}".fmt(tmp.pow(2) / 1000.0f), Vec2(10.0f, 120.0f), DrawOptions(color,));
+    drawText("FPS: {}".fmt(parin.fps), Vec2(10.0f, 30.0f), DrawOptions(color));
+    drawText("Boids: {}".fmt(tmp), Vec2(10.0f, 50.0f), DrawOptions(color));
+    drawText("Score: {}".fmt(tmp.pow(2) / 1000.0f), Vec2(10.0f, 70.0f), DrawOptions(color));
     return false;
 }
 
