@@ -98,9 +98,9 @@ struct Game {
         }
         if (weight != 0.0f) {
             auto vel = 1.0f * boid.vel;
-            vel += 0.01 * meanDelta / weight;
-            vel += 0.03 * meanTrend / weight;
-            vel += 0.02 * meanSpread / spreadWeight;
+            vel += 0.01f * meanDelta / weight;
+            vel += 0.03f * meanTrend / weight;
+            vel += 0.02f * meanSpread / spreadWeight;
             boid.vel = vel.normalize();
         }
     }
