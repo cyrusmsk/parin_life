@@ -27,9 +27,6 @@
             "dflags-ldc": [
                 "-link-defaultlib-shared=false"
             ],
-            "lflags-windows": [
-              "packaging/windows/app.rc"
-            ],
 			"targetType": "executable"
 		},
 		{

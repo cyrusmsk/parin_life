@@ -65,6 +65,8 @@ jobs:
       - name: Prepare AppImage
         if: runner.os == 'Linux'
         run: |
+          sudo apt-get update
+          sudo apt-get install -y libfuse2
           mkdir -p AppDir/usr/bin
           cp ${APP_NAME} AppDir/usr/bin/
           cp -r assets AppDir/ || true
