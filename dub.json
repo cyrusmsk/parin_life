@@ -4,7 +4,7 @@
 	],
 	"license": "MIT",
 	"copyright": "Copyright © 2026, Serg Gini",
-	"name": "boid_game",
+	"name": "game",
 	"description": "A boid game made with D and Parin",
 	"dependencies": {
 		"parin": "~>0.1.22"

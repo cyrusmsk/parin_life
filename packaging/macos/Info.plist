@@ -6,16 +6,16 @@
 <dict>
 
     <key>CFBundleExecutable</key>
-    <string>boid_game</string>
+    <string>game</string>
 
     <key>CFBundleIdentifier</key>
-    <string>io.github.cyrusmsk.boid_game</string>
+    <string>io.github.cyrusmsk.game</string>
 
     <key>CFBundleName</key>
-    <string>boid_game</string>
+    <string>game</string>
 
     <key>CFBundleDisplayName</key>
-    <string>boid_game</string>
+    <string>game</string>
 
     <key>CFBundleVersion</key>
     <string>1.0.0</string>

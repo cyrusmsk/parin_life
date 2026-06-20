@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=boid_game
+Name=game
 Comment=My awesome boid game
-Exec=boid_game
-Icon=boid_game
+Exec=game
+Icon=game
 Categories=Game;
 Terminal=false
