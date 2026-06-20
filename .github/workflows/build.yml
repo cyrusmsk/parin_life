@@ -1,0 +1,140 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            name: linux
+
+          - os: macos-latest
+            name: macos
+
+          - os: windows-latest
+            name: windows
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      APP_NAME: boid_game
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup D
+        uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ldc-latest
+
+      - name: Build
+        run: dub build --compiler=ldc2
+
+      ####################################################
+      # WINDOWS
+      ####################################################
+      - name: Package Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          mkdir dist
+          Copy-Item "$env:APP_NAME.exe" dist/
+          Compress-Archive -Path dist/* -DestinationPath "${env:APP_NAME}-windows.zip"
+
+      - name: Upload Windows artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: boid_game-windows.zip
+
+      ####################################################
+      # LINUX APPIMAGE
+      ####################################################
+      - name: Prepare AppImage
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p AppDir/usr/bin
+          cp ${APP_NAME} AppDir/usr/bin/
+          cp -r assets AppDir/ || true
+          cp packaging/linux/AppRun AppDir/
+          cp packaging/linux/${APP_NAME}.desktop AppDir/
+          cp packaging/linux/${APP_NAME}.png AppDir/
+          chmod +x AppDir/AppRun
+
+      - name: Install appimagetool
+        if: runner.os == 'Linux'
+        run: |
+          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+
+      - name: Build AppImage
+        if: runner.os == 'Linux'
+        run: |
+          ./appimagetool-x86_64.AppImage AppDir ${APP_NAME}-linux.AppImage
+
+      - name: Upload Linux artifact
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: "*.AppImage"
+
+      ####################################################
+      # MACOS DMG
+      ####################################################
+      - name: Create app bundle
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p ${APP_NAME}.app/Contents/MacOS
+          mkdir -p ${APP_NAME}.app/Contents/Resources
+
+          cp ${APP_NAME} ${APP_NAME}.app/Contents/MacOS/
+          cp packaging/macos/Info.plist ${APP_NAME}.app/Contents/
+          cp packaging/macos/icon.icns ${APP_NAME}.app/Contents/Resources/
+
+          if [ -d assets ]; then
+            cp -R assets ${APP_NAME}.app/Contents/Resources/
+          fi
+
+      - name: Create DMG
+        if: runner.os == 'macOS'
+        run: |
+          hdiutil create \
+            -volname "${APP_NAME}" \
+            -srcfolder "${APP_NAME}.app" \
+            -ov -format UDZO \
+            "${APP_NAME}.dmg"
+
+      - name: Upload macOS artifact
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: "*.dmg"
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**/*

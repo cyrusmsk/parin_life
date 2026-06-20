@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=boid_game
+Comment=My awesome boid game
+Exec=boid_game
+Icon=boid_game
+Categories=Game;
+Terminal=false
