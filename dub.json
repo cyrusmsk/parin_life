@@ -1,30 +1,64 @@
 {
-  "authors": ["Sergei Giniatulin"],
-  "copyright": "Copyright © 2026, Serg Gini",
-  "description": "A Game Of Life made with Parin.",
-  "license": "MIT",
-  "name": "game",
-  "stringImportPaths": ["assets"],
-  "dependencies": {
-    "parin": "*"
-  },
-  "configurations": [
-    {
-      "name": "default",
-      "targetType": "executable",
-      "dflags-ldc": ["-mcpu=native"]
-    },
-    {
-      "name": "wasm",
-      "targetType": "library",
-      "targetName": "game_wasm",
-      "dflags": [
-        "-mtriple=wasm32-unknown-unknown-wasm",
-        "-checkaction=halt",
-        "-i",
-        "--release",
-        "-betterC"
-      ]
-    }
-  ]
+	"authors": [
+		"Sergei Giniatulin"
+	],
+	"license": "MIT",
+	"copyright": "Copyright © 2026, Serg Gini",
+	"name": "boid_game",
+	"description": "A boid game made with D and Parin",
+	"dependencies": {
+		"parin": "~>0.1.22"
+	},
+    "buildTypes": {
+		"release": {
+			"buildOptions": [
+				"optimize",
+                "releaseMode",
+				"inline"
+			]
+		}
+	},
+	"configurations": [
+		{
+			"name": "default",
+            "buildRequirements": [
+                "allowWarnings"
+            ],
+            "dflags-ldc": [
+                "-link-defaultlib-shared=false"
+            ],
+            "lflags-windows": [
+              "packaging/windows/app.rc"
+            ],
+			"targetType": "executable"
+		},
+		{
+			"name": "manual_linux",
+			"dflags-ldc": [
+				"-mtriple=x86_64-unknown-linux-gnu",
+				"--release"
+			],
+			"targetType": "executable",
+			"lflags": [
+                "-lphobos2-ldc",
+                "-ldruntime-ldc",
+                "-lunwind",
+                "-lpthread",
+                "-ldl",
+                "-lm"
+			]
+		},
+		{
+			"targetType": "library",
+			"targetName": "game_wasm",
+			"dflags": [
+				"-mtriple=wasm32-unknown-unknown-wasm",
+				"-checkaction=halt",
+				"-i",
+				"--release",
+				"-betterC"
+			],
+			"name": "wasm"
+		}
+	]
 }
