@@ -41,7 +41,7 @@ jobs:
       - name: Build
         run: |
           dub run parin:setup
-          dub build --compiler=ldc2
+          dub build --compiler=ldc2 --build=release
 
       ####################################################
       # WINDOWS
@@ -52,6 +52,8 @@ jobs:
         run: |
           mkdir dist
           Copy-Item "$env:APP_NAME.exe" dist/
+          Copy-Item "*.dll" dist/
+          Copy-Item "*.lib" dist/
           Compress-Archive -Path dist/* -DestinationPath "${env:APP_NAME}-windows.zip"
 
       - name: Upload Windows artifact
