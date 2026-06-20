@@ -1,6 +1,9 @@
 # Life in D
 Port of [Life game](https://github.com/contextfreecode/life) to D and Parin engine.
 
+## Downloading
+Artifacts are available in Releases files.
+
 ## Building
 To install:
 
